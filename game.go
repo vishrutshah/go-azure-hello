@@ -117,3 +117,15 @@ func UpdateBoard (g *Game) {
         }
     }
 }
+
+
+func IsAlive(g *Game) bool {
+    for i := 0; i < g.Width; i++{
+        for j := 0; j < g.Height; j++ {
+            if g.Board[i][j] == true {
+                return true
+            }
+        }
+    }
+    return false
+}

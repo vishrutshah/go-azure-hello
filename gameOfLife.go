@@ -1,7 +1,7 @@
 package main
 
 import (
-    //"fmt"
+    "fmt"
     "net/http"
     "html/template"
     "game"
@@ -30,30 +30,17 @@ func drawGol(w http.ResponseWriter, r *http.Request) {
     renderTemplate(w, text)
 }
 
-func runGame(g *game.Game, frameRate int){
-    waitTime := 1000 / frameRate
-    time.Sleep(time.Duration(waitTime) * time.Millisecond)
+func runGame(g *game.Game){
+    time.Sleep(1000 * time.Millisecond)
     game.UpdateBoard(g)
+    fmt.Print(game.WriteText(g, "\n"))
+    fmt.Println()
 }
 
 func main() {
     game.InitGame(&g)
-    game.PrintBoard(&g)
     
-    /*
-    fmt.Println("First generation")
-    fmt.Print(game.WriteText(&g, "\n"))
-    game.UpdateBoard(&g)
-    fmt.Println("Second generation")
-    fmt.Print(game.WriteText(&g, "\n"))
-    */
-    
-    
-    http.HandleFunc("/game", drawGol)
-	http.ListenAndServe(":8080", nil)
-    
-    for true {
-        go runGame(&g, 30)
-        http.HandleFunc("/game", drawGol)
+    for game.IsAlive(&g) {
+        runGame(&g)
     }
 }
