@@ -3,6 +3,7 @@ package game
 import (
     "fmt"
     "math/rand"
+    "time"
 )
 
 type Game struct {
@@ -10,9 +11,10 @@ type Game struct {
     Neighbors [][]int
     Width int
     Height int
+    Generations int64
 }
 
-func InitGame(g *Game){
+func InitGame(g *Game) {
     for i := 0; i < g.Width; i++ {
         g.Board[i] = make([]bool, g.Height)
         g.Neighbors[i] = make([]int, g.Height)
@@ -21,19 +23,18 @@ func InitGame(g *Game){
 }
 
 func FillBoard(g *Game){
-    seedIndex := 0
     for i := 0; i < g.Width; i++{
         for j := 0; j < g.Height; j++ {
-            rand.Seed(int64(seedIndex + i * j))
+            rand.Seed((time.Now()).UnixNano())
             randy := rand.Int()
-            if randy % 2 == 1 {
-                g.Board[i][j] = true
-            } else {
+            if randy % 8 == 1 {
                 g.Board[i][j] = false
+            } else {
+                g.Board[i][j] = true
             }
-            seedIndex++
         }
     }
+    g.Generations = 1
 }
 
 func PrintBoard(g *Game) {
@@ -42,14 +43,14 @@ func PrintBoard(g *Game) {
 	}
 }
 
-func WriteText(g *Game, newline string) string{
+func WriteText(g *Game, aliveCells string, deadCells string, newline string) string{
     text := ""
     for i := 0; i < g.Width; i++{
         for j := 0; j < g.Height; j++ {
             if g.Board[i][j] == true {
-                text += "O"
+                text += aliveCells
             } else {
-                text += "-"
+                text += deadCells
             }
         }
         text += newline
@@ -116,6 +117,7 @@ func UpdateBoard (g *Game) {
             }
         }
     }
+    g.Generations++
 }
 
 
@@ -128,4 +130,10 @@ func IsAlive(g *Game) bool {
         }
     }
     return false
+}
+
+func RunGame(g *Game) int64 {
+    time.Sleep(1000 * time.Millisecond)
+    UpdateBoard(g)
+    return g.Generations
 }

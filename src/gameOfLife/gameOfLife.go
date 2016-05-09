@@ -5,12 +5,13 @@ import (
     "net/http"
     "html/template"
     "game"
-    "time"
+    //"time"
 )
 
-var width, height = 10, 10
+var width, height = 30, 30
 var golTemplate, err = template.ParseFiles("gol.html")
-var g = game.Game { make([][]bool, width), make([][]int, width), width, height}
+var g = game.Game { make([][]bool, width), make([][]int, width), width, height, 1}
+var longestGameGen int64
 
 
 func serverError(w *http.ResponseWriter, err error){
@@ -26,31 +27,34 @@ func renderTemplate(w http.ResponseWriter, text string) {
 }
 
 func drawGol(w http.ResponseWriter, r *http.Request) {
-    text := game.WriteText(&g, "<p>")
+    text := game.WriteText(&g, "O", "_", "<p>")
     renderTemplate(w, text)
 }
 
-func runGame(g *game.Game){
-    time.Sleep(1000 * time.Millisecond)
-    game.UpdateBoard(g)
-    fmt.Print(game.WriteText(g, "\n"))
-    fmt.Println()
+func newGol(w http.ResponseWriter, r *http.Request) {
+    game.FillBoard(&g)
+    http.Redirect(w, r, "/game/", http.StatusFound)
 }
 
 func runGameEndless() {
     for {
         for game.IsAlive(&g) {
-            runGame(&g)
+            gen := game.RunGame(&g)
+            if gen > longestGameGen {
+                longestGameGen = g.Generations
+                fmt.Println(longestGameGen)
+            }
         }
         game.FillBoard(&g)
     }
 }
 
 func main() {
+    longestGameGen = 0
     game.InitGame(&g)
-
-    go runGameEndless()
-    
+    go runGameEndless()    
     http.HandleFunc("/game/", drawGol)
+    http.HandleFunc("/new/", newGol)
+    http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
     http.ListenAndServe(":8080", nil)   
 }

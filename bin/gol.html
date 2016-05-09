@@ -1,12 +1,16 @@
 <html>
     <head>
         <meta http-equiv="refresh" content="1" />
+        <link rel="stylesheet" href="/css/style.css">
         <title>The Game of Life</title>
     </head>
     <body>
         <h1>The Game of Life</h1>
-
-        <div style="font-family: Courier">{{.}}<div>
+        <form action="/new/" method="POST">
+            <div>
+                <input type="submit" value="New game">
+            </div>
+        <div class="game" style="font-family: 'Courier'">{{.}}<div>
         
     </body>
 </html>
