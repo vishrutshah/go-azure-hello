@@ -37,10 +37,20 @@ func runGame(g *game.Game){
     fmt.Println()
 }
 
+func runGameEndless() {
+    for {
+        for game.IsAlive(&g) {
+            runGame(&g)
+        }
+        game.FillBoard(&g)
+    }
+}
+
 func main() {
     game.InitGame(&g)
+
+    go runGameEndless()
     
-    for game.IsAlive(&g) {
-        runGame(&g)
-    }
+    http.HandleFunc("/game/", drawGol)
+    http.ListenAndServe(":8080", nil)   
 }
