@@ -8,9 +8,13 @@ import (
     //"time"
 )
 
-var width, height = 30, 30
+var width, height = 5, 5
 var golTemplate, err = template.ParseFiles("../src/gol.html")
-var g = game.Game { make([][]bool, width), make([][]int, width), width, height, 1}
+var g = game.Game {Board: make([][]bool, width),
+    Neighbors: make([][]int, width),
+    Width: width,
+    Height: height,
+    Generations: 1}
 var longestGameGen int64
 
 
@@ -45,13 +49,17 @@ func runGameEndless() {
                 //fmt.Println(longestGameGen)
             }
         }
-        game.FillBoard(&g)
+        g, _ = game.LoadFile("game.txt")
+        //game.FillBoard(&g)
     }
 }
 
 func main() {
     longestGameGen = 0
     game.InitGame(&g)
+    g, _ = game.LoadFile("game.txt")
+    game.PrintBoard(&g)
+    //game.CreateFile(&g)
     go runGameEndless()    
     http.HandleFunc("/game/", drawGol)
     http.HandleFunc("/new/", newGol)

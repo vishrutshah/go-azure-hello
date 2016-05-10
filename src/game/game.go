@@ -4,6 +4,8 @@ import (
     "fmt"
     "math/rand"
     "time"
+    "encoding/json"
+    "io/ioutil"
 )
 
 type Game struct {
@@ -25,9 +27,9 @@ func InitGame(g *Game) {
 func FillBoard(g *Game){
     for i := 0; i < g.Width; i++{
         for j := 0; j < g.Height; j++ {
-            rand.Seed((time.Now()).UnixNano())
+            rand.Seed((time.Now()).UnixNano() + int64(j) + int64(i))
             randy := rand.Int()
-            if randy % 8 == 1 {
+            if randy % 2 == 1 {
                 g.Board[i][j] = false
             } else {
                 g.Board[i][j] = true
@@ -35,6 +37,12 @@ func FillBoard(g *Game){
         }
     }
     g.Generations = 1
+}
+
+func RunGame(g *Game) int64 {
+    time.Sleep(1000 * time.Millisecond)
+    UpdateBoard(g)
+    return g.Generations
 }
 
 func PrintBoard(g *Game) {
@@ -56,6 +64,19 @@ func WriteText(g *Game, aliveCells string, deadCells string, newline string) str
         text += newline
     }
     return text
+}
+
+func CreateFile(g *Game) error {
+    text, err := json.MarshalIndent(g, "", "    ")
+    if err != nil {
+        return err
+    }
+    return ioutil.WriteFile("game.txt", text, 0600) 
+}
+
+func LoadFile(filename string, g *Game){
+    text, _ := ioutil.ReadFile(filename)   
+    json.Unmarshal(text, g)
 }
 
 func UpdateBoard (g *Game) {
@@ -120,7 +141,6 @@ func UpdateBoard (g *Game) {
     g.Generations++
 }
 
-
 func IsAlive(g *Game) bool {
     for i := 0; i < g.Width; i++{
         for j := 0; j < g.Height; j++ {
@@ -132,8 +152,3 @@ func IsAlive(g *Game) bool {
     return false
 }
 
-func RunGame(g *Game) int64 {
-    time.Sleep(1000 * time.Millisecond)
-    UpdateBoard(g)
-    return g.Generations
-}
