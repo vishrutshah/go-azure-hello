@@ -1,7 +1,7 @@
 package main
 
 import (
-    "fmt"
+    //"fmt"
     "net/http"
     "html/template"
     "game"
@@ -10,13 +10,14 @@ import (
     //"time"
 )
 
-var width, height = 5, 5
+var width, height = 100, 50
 var golTemplate, err = template.ParseFiles("../src/gol.html")
 var g = game.Game {Board: make([][]bool, width),
     Neighbors: make([][]int, width),
     Width: width,
     Height: height,
-    Generations: 1}
+    Generations: 1,
+    CurrentLongest: false}
 var longestGameGen int64
 var current, longest = "currentGame.txt", "longestGame.txt"
 
@@ -33,33 +34,44 @@ func renderTemplate(w http.ResponseWriter, text string) {
 }
 
 func drawGol(w http.ResponseWriter, r *http.Request) {
-    text := game.WriteText(&g, "O", "_", "<p>")
+    text := game.WriteText(&g, "O", "·", "<p>")
     renderTemplate(w, text)
 }
 
 func newGol(w http.ResponseWriter, r *http.Request) {
-    game.FillBoard(&g)
+    resetGame()
+    http.Redirect(w, r, "/game/", http.StatusFound)
+}
+
+func longestGame(w http.ResponseWriter, r *http.Request) {
+    game.LoadFile(longest, &g)
     game.CreateFile(&g, current)
     http.Redirect(w, r, "/game/", http.StatusFound)
+}
+
+func resetGame() {
+    if g.Generations >= longestGameGen {
+        //copy and paste currentGame to longestGame, overwrites
+        copyPasteFile(longest, current)
+    }
+    g.CurrentLongest = false
+    game.FillBoard(&g)
+    game.CreateFile(&g, current)
 }
 
 func runGameEndless() {
     for {
         for game.IsAlive(&g) {
-            fmt.Printf("Gen actual: %d\nGen del juego mas largo: %d\n", g.Generations, longestGameGen)
-            game.RunGame(&g)
-            
+            game.RunGame(&g)            
             if g.Generations > longestGameGen {
                 longestGameGen = g.Generations
-                //fmt.Println(longestGameGen)
+                if g.CurrentLongest == false {
+                    g.CurrentLongest = true
+                    copyPasteFile(longest, current)
+                }
             }
         }
-        if g.Generations == longestGameGen {
-            //copy and paste currentGame to longestGame, overwrites
-            copyPasteFile(longest, current)
-        }
-        game.FillBoard(&g)
-        game.CreateFile(&g, current)
+        resetGame()
     }
 }
 
@@ -78,14 +90,13 @@ func copyPasteFile(destiny, source string) error {
 }
 
 func main() {
-    longestGameGen = 0
+    longestGameGen = 1
     game.InitGame(&g)
-    //game.LoadFile("game.txt", &g)
-    //game.PrintBoard(&g)
     game.CreateFile(&g, current)
-    go runGameEndless()    
+    go runGameEndless()
     http.HandleFunc("/game/", drawGol)
     http.HandleFunc("/new/", newGol)
+    http.HandleFunc("/longest/", longestGame)
     http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../src/css"))))
     http.ListenAndServe(":8080", nil)   
 }

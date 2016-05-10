@@ -15,19 +15,20 @@ type Game struct {
     Width int
     Height int
     Generations int64
+    CurrentLongest bool
 }
 
 func InitGame(g *Game) {
-    for i := 0; i < g.Width; i++ {
-        g.Board[i] = make([]bool, g.Height)
-        g.Neighbors[i] = make([]int, g.Height)
+    for i := 0; i < g.Height; i++ {
+        g.Board[i] = make([]bool, g.Width)
+        g.Neighbors[i] = make([]int, g.Width)
 	}
     FillBoard(g)
 }
 
 func FillBoard(g *Game){
-    for i := 0; i < g.Width; i++{
-        for j := 0; j < g.Height; j++ {
+    for i := 0; i < g.Height; i++{
+        for j := 0; j < g.Width; j++ {
             rand.Seed((time.Now()).UnixNano() + int64(j) + int64(i))
             randy := rand.Int()
             if randy % 2 == 1 {
@@ -47,7 +48,7 @@ func RunGame(g *Game) {
 
 
 func PrintBoard(g *Game) {
-    for i := 0; i < g.Width; i++ {        
+    for i := 0; i < g.Height; i++ {        
 		fmt.Printf("%t\n", g.Board[i])
 	}
 }
@@ -55,8 +56,8 @@ func PrintBoard(g *Game) {
 
 func WriteText(g *Game, aliveCells string, deadCells string, newline string) string{
     text := ""
-    for i := 0; i < g.Width; i++{
-        for j := 0; j < g.Height; j++ {
+    for i := 0; i < g.Height; i++{
+        for j := 0; j < g.Width; j++ {
             if g.Board[i][j] == true {
                 text += aliveCells
             } else {
@@ -94,8 +95,8 @@ func UpdateBoard (g *Game) {
     //count neighbors
     count := 0
     var x1, y1, x2, y2 int
-    for i := 0; i < g.Width; i++{
-        for j := 0; j < g.Height; j++ {
+    for i := 0; i < g.Height; i++{
+        for j := 0; j < g.Width; j++ {
                         
             if i != 0 {
                 x1 = i - 1
@@ -103,7 +104,7 @@ func UpdateBoard (g *Game) {
                 x1 = i
             }
             
-            if i != (g.Width - 1) {
+            if i != (g.Height - 1) {
                 x2 = i + 1
             } else {
                 x2 = i
@@ -115,7 +116,7 @@ func UpdateBoard (g *Game) {
                 y1 = j
             }
             
-            if j != (g.Height - 1) {
+            if j != (g.Width - 1) {
                 y2 = j + 1
             } else {
                 y2 = j
@@ -136,8 +137,8 @@ func UpdateBoard (g *Game) {
         }
     }
     //reassign life
-    for i := 0; i < g.Width; i++{
-        for j := 0; j < g.Height; j++ {
+    for i := 0; i < g.Height; i++{
+        for j := 0; j < g.Width; j++ {
             if g.Board[i][j] == true {
                 if g.Neighbors[i][j] < 2 || g.Neighbors[i][j] > 3{
                     g.Board[i][j] = false
@@ -153,8 +154,8 @@ func UpdateBoard (g *Game) {
 }
 
 func IsAlive(g *Game) bool {
-    for i := 0; i < g.Width; i++{
-        for j := 0; j < g.Height; j++ {
+    for i := 0; i < g.Height; i++{
+        for j := 0; j < g.Width; j++ {
             if g.Board[i][j] == true {
                 return true
             }

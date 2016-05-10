@@ -1,4 +1,4 @@
-<html>
+<!DOCTYPE html>
     <head>
         <meta http-equiv="refresh" content="1" />
         <link rel="stylesheet" href="/css/style.css">
@@ -6,12 +6,15 @@
     </head>
     <body>
         <h1>The Game of Life</h1>
+        
         <form action="/new/" method="POST">
-            <div>
-                <input type="submit" value="New game">
-            </div>
+            <input type="submit" value="New game">
+        </form>
+        <form action="/longest/" method="POST">
+            <input type="submit" value="Load longest game">
+        </form>
+        
         <div class="game" style="font-family: 'Courier'">{{.}}<div>
         
     </body>
 </html>
-

@@ -1,11 +1,35 @@
 .game{
     line-height: 0px;
-    letter-spacing: 4px;
-    margin: 20px;
+    letter-spacing: 5px;
+    font-family: "Courier New, Courier, monospace";
+    padding: 20px;
 }
 
 
 body {
+    font-family: sans-serif;
     background-color: black;
     color: springgreen;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+}
+
+input {
+    background-color: black;
+    color: springgreen;
+    border: 1px solid springgreen;
+    margin-top: 15px;
+    font-size: 1.125em;
+}
+
+input:hover {
+    background-color: springgreen;
+    color: black;
+}
+
+h1 {
+    width: 100%;
+    margin: auto;
+    padding: 15px 0px 15px 0px;
 }
