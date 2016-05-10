@@ -6,6 +6,7 @@ import (
     "time"
     "encoding/json"
     "io/ioutil"
+    "os"
 )
 
 type Game struct {
@@ -39,17 +40,18 @@ func FillBoard(g *Game){
     g.Generations = 1
 }
 
-func RunGame(g *Game) int64 {
+func RunGame(g *Game) {
     time.Sleep(1000 * time.Millisecond)
     UpdateBoard(g)
-    return g.Generations
 }
+
 
 func PrintBoard(g *Game) {
     for i := 0; i < g.Width; i++ {        
 		fmt.Printf("%t\n", g.Board[i])
 	}
 }
+
 
 func WriteText(g *Game, aliveCells string, deadCells string, newline string) string{
     text := ""
@@ -66,12 +68,21 @@ func WriteText(g *Game, aliveCells string, deadCells string, newline string) str
     return text
 }
 
-func CreateFile(g *Game) error {
+func CreateFile(g *Game, filename string) error {
     text, err := json.MarshalIndent(g, "", "    ")
     if err != nil {
         return err
     }
-    return ioutil.WriteFile("game.txt", text, 0600) 
+    
+    _, err2 := os.Stat(filename)
+    if os.IsExist(err2) {
+        err3 := os.Remove(filename)
+        if err3 != nil {
+            return err3
+        }
+    }    
+        
+    return ioutil.WriteFile(filename, text, 0600) 
 }
 
 func LoadFile(filename string, g *Game){
