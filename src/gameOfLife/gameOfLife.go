@@ -1,7 +1,7 @@
 package main
 
 import (
-    "fmt"
+    //"fmt"
     "net/http"
     "html/template"
     "game"
@@ -9,7 +9,7 @@ import (
 )
 
 var width, height = 30, 30
-var golTemplate, err = template.ParseFiles("gol.html")
+var golTemplate, err = template.ParseFiles("../src/gol.html")
 var g = game.Game { make([][]bool, width), make([][]int, width), width, height, 1}
 var longestGameGen int64
 
@@ -42,7 +42,7 @@ func runGameEndless() {
             gen := game.RunGame(&g)
             if gen > longestGameGen {
                 longestGameGen = g.Generations
-                fmt.Println(longestGameGen)
+                //fmt.Println(longestGameGen)
             }
         }
         game.FillBoard(&g)
@@ -55,6 +55,6 @@ func main() {
     go runGameEndless()    
     http.HandleFunc("/game/", drawGol)
     http.HandleFunc("/new/", newGol)
-    http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
+    http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../src/css"))))
     http.ListenAndServe(":8080", nil)   
 }
