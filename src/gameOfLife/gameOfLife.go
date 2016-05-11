@@ -4,15 +4,16 @@ import (
     //"fmt"
     "net/http"
     "html/template"
-    "game"
+    //"game"
     "io/ioutil"
     "os"
+    //"github.com/Azure/azure-sdk-for-go/storage" 
     //"time"
 )
 
 var width, height = 100, 50
 var golTemplate, err = template.ParseFiles("../src/gol.html")
-var g = game.Game {Board: make([][]bool, width),
+var g = Game {Board: make([][]bool, width),
     Neighbors: make([][]int, width),
     Width: width,
     Height: height,
@@ -34,7 +35,7 @@ func renderTemplate(w http.ResponseWriter, text string) {
 }
 
 func drawGol(w http.ResponseWriter, r *http.Request) {
-    text := game.WriteText(&g, "O", "·", "<p>")
+    text := WriteText(&g, "O", "·", "<p>")
     renderTemplate(w, text)
 }
 
@@ -44,8 +45,8 @@ func newGol(w http.ResponseWriter, r *http.Request) {
 }
 
 func longestGame(w http.ResponseWriter, r *http.Request) {
-    game.LoadFile(longest, &g)
-    game.CreateFile(&g, current)
+    LoadFile(longest, &g)
+    CreateFile(&g, current)
     http.Redirect(w, r, "/game/", http.StatusFound)
 }
 
@@ -55,14 +56,14 @@ func resetGame() {
         copyPasteFile(longest, current)
     }
     g.CurrentLongest = false
-    game.FillBoard(&g)
-    game.CreateFile(&g, current)
+    FillBoard(&g)
+    CreateFile(&g, current)
 }
 
 func runGameEndless() {
     for {
-        for game.IsAlive(&g) {
-            game.RunGame(&g)            
+        for IsAlive(&g) {
+            RunGame(&g)            
             if g.Generations > longestGameGen {
                 longestGameGen = g.Generations
                 if g.CurrentLongest == false {
@@ -91,8 +92,8 @@ func copyPasteFile(destiny, source string) error {
 
 func main() {
     longestGameGen = 1
-    game.InitGame(&g)
-    game.CreateFile(&g, current)
+    InitGame(&g)
+    CreateFile(&g, current)
     go runGameEndless()
     http.HandleFunc("/game/", drawGol)
     http.HandleFunc("/new/", newGol)
