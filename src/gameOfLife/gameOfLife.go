@@ -93,8 +93,13 @@ func copyPasteFile(destiny, source string) error {
 func main() {
     longestGameGen = 1
     InitGame(&g)
-    CreateFile(&g, current)
-    go runGameEndless()
+    //CreateFile(&g, current)
+    
+    c,_ := InitStorage()    
+    CreateFileBlob(&g, current, c)
+    
+    
+    //go runGameEndless()
     http.HandleFunc("/game/", drawGol)
     http.HandleFunc("/new/", newGol)
     http.HandleFunc("/longest/", longestGame)
