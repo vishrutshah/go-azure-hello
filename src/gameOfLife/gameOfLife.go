@@ -1,14 +1,11 @@
 package main
 
 import (
-    //"fmt"
     "net/http"
     "html/template"
-    //"game"
     "io/ioutil"
     "os"
-    //"github.com/Azure/azure-sdk-for-go/storage" 
-    //"time"
+    "github.com/Azure/azure-sdk-for-go/storage"
 )
 
 var width, height = 100, 50
@@ -20,7 +17,7 @@ var g = Game {Board: make([][]bool, width),
     Generations: 1,
     CurrentLongest: false}
 var longestGameGen int64
-var current, longest = "currentGame.txt", "longestGame.txt"
+var current, longest, container = "currentGame", "longestGame", "games"
 
 func serverError(w *http.ResponseWriter, err error){
 	if err != nil {
@@ -45,22 +42,32 @@ func newGol(w http.ResponseWriter, r *http.Request) {
 }
 
 func longestGame(w http.ResponseWriter, r *http.Request) {
-    LoadFile(longest, &g)
-    CreateFile(&g, current)
+    //LoadFile(longest, &g)
+    b,_ := InitStorage()
+    _, _, text := LoadFileBlob(longest, container, b)
+    FillBoard(&g, text)
+    //CreateFile(&g, current)
+    CreateFileBlob(current, container, b)
+    FillBlob(current, container, text, b)
+    
     http.Redirect(w, r, "/game/", http.StatusFound)
 }
 
 func resetGame() {
+    b,_ := InitStorage()
     if g.Generations >= longestGameGen {
         //copy and paste currentGame to longestGame, overwrites
-        copyPasteFile(longest, current)
+        //copyPasteFile(longest, current)
+        CopyPasteFileBlob(longest, current, container, b)
     }
     g.CurrentLongest = false
-    FillBoard(&g)
-    CreateFile(&g, current)
+    FillRandomBoard(&g)
+    //CreateFile(&g, current)
+    CreateFileBlob(current, container, b)
+    FillGameBlob(&g, current, container, b)
 }
 
-func runGameEndless() {
+func runGameEndless(b *storage.BlobStorageClient) {
     for {
         for IsAlive(&g) {
             RunGame(&g)            
@@ -68,7 +75,9 @@ func runGameEndless() {
                 longestGameGen = g.Generations
                 if g.CurrentLongest == false {
                     g.CurrentLongest = true
-                    copyPasteFile(longest, current)
+                    //copyPasteFile(longest, current)
+                    b,_ := InitStorage()
+                    CopyPasteFileBlob(longest, current, container, b)
                 }
             }
         }
@@ -85,21 +94,20 @@ func copyPasteFile(destiny, source string) error {
         if err2 != nil {
             return err2
         }
-    }    
-    
+    }
     return ioutil.WriteFile(destiny, text, 0600)
 }
 
 func main() {
     longestGameGen = 1
     InitGame(&g)
-    //CreateFile(&g, current)
     
-    c,_ := InitStorage()    
-    CreateFileBlob(&g, current, c)
+    //CreateFile(&g, current)    
+    b,_ := InitStorage()
+    CreateFileBlob(current, container, b)
+    FillGameBlob(&g, current, container, b)
     
-    
-    //go runGameEndless()
+    go runGameEndless(b)
     http.HandleFunc("/game/", drawGol)
     http.HandleFunc("/new/", newGol)
     http.HandleFunc("/longest/", longestGame)

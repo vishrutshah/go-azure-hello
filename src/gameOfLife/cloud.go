@@ -2,136 +2,103 @@ package main
 
 import (
     "github.com/Azure/azure-sdk-for-go/storage"
-    //"game"
     "encoding/json"
-    "fmt"
+    "io/ioutil"
 )
 
-var fileBoundary int64 = 512
-var cont string = "games"
-
 func InitStorage() (*storage.BlobStorageClient, error) {
-    // get accountName, accountKey
     accountName := "hellosto"
-    accountKey := "SlZ2qIXn+rcRmFtE5UkUYN8P/mAYMKo48wPNugPF2o5hWnOMWSR+VRP8qHhOO/7EJptBCQoLAObgj3gcPSZQhA=="
-    
+    accountKey := "SlZ2qIXn+rcRmFtE5UkUYN8P/mAYMKo48wPNugPF2o5hWnOMWSR+VRP8qHhOO/7EJptBCQoLAObgj3gcPSZQhA=="    
     client, err := storage.NewBasicClient(accountName, accountKey)
     if err != nil {
-        return nil, err
-    }
-    
+        return err
+    }    
     blobStoClient := storage.Client.GetBlobService(client)
     
-    return &blobStoClient, nil
+    return &blobStoClient, nil      
 }
 
-func CopyPasteFileBlob(destiny, source string) {
-    
-}
-
-func CreateFileBlob(g *Game, fileName string, b *storage.BlobStorageClient) error {
-    //add a name to the container
-    //cont := "games"
-    _, err := storage.BlobStorageClient.CreateContainerIfNotExists(*b, cont, storage.ContainerAccessTypeBlob)
+func CopyPasteFileBlob(destiny, source, cont string, b *storage.BlobStorageClient) error{
+    err := CreateFileBlob(destiny, cont, b)
     if err != nil {
         return err
     }
-    fmt.Println("Created container")
     
-    fileExists, err := storage.BlobStorageClient.BlobExists(*b, cont, fileName)
+    _, err, text := LoadFileBlob(source, cont, b)
     if err != nil {
         return err
     }
-    fmt.Println("Asked if blob exists")
     
-    text, err := json.MarshalIndent(g, "", "    ")
-    if err != nil {
-        return err
+    err1 := storage.BlobStorageClient.AppendBlock(*b, cont, destiny, *text, nil)
+    if err1 != nil {
+        return err1
     }
-    fmt.Println("Marshalled game")
-    
-    var fileSize int64
-    
-    fileSize = int64(len(text) + (g.Width * g.Height))
-    fileSize /= fileBoundary
-    fileSize++
-    fileSize *= fileBoundary
-    fmt.Printf("Filesize: %d\n", fileSize)
-    
-    
-    //is the block blob the best option?
-    /*
-    if fileExists == false {        
-        err := b.storage.CreateBlockBlob(cont, filename)
-        if err != nil {
-            return err
-        }
-    }
-    */
-    
-    extraHeaders := make(map[string]string)
-    extraHeaders["Content-Type"] = "text/plain"
-    
-    if fileExists == false {
-        err := storage.BlobStorageClient.PutPageBlob(*b, cont, fileName, fileSize, nil)
-        if err != nil {
-            return err
-        }
-    }
-    fmt.Println("Created blob page")
-    
-    /*
-    //get blockid
-    blockID := "yada-yada-yada"
-    
-    err = b.storage.PutBlock(cont, filename, "", text)
-    if err != nil {
-        return err
-    }
-    */
-    
-    /*
-    prop, err := storage.BlobStorageClient.GetBlobProperties(*b, cont, fileName)
-    if err != nil {
-        return err
-    }
-    fmt.Printf("Content type: %s\n", prop.ContentType)
-    */
-    
-    err2 := storage.BlobStorageClient.PutPage(*b, cont, fileName, 0, fileSize - 1, storage.PageWriteTypeUpdate, text, nil )
-    if err2 != nil {
-        return err2
-    }
-    fmt.Println("Filled the blob")
-    
-    
-    
-    
-    
     
     return nil
 }
 
-/*
-func loadFileBlob(g *game.Game, filename string, b cloudManage.BlobStorageClient) error{
-    cont := "games"
-    fileExists, err := b.storage.BlobExists(cont, filename)
+func CreateFileBlob(fileName, cont string, b *storage.BlobStorageClient) error {
+    _, err := storage.BlobStorageClient.CreateContainerIfNotExists(*b, cont, storage.ContainerAccessTypeBlob)
     if err != nil {
         return err
     }
-    
-    reader, err := b.storage.GetBlob(cont, filename)
-    if err != nil {
-        return err
+        
+    //as these are append blobs, and just one game is needed, each time a game is stored,
+    //the previous blob should be completely deleted
+    _, err1 := storage.BlobStorageClient.DeleteBlobIfExists(*b, cont, fileName, nil)
+    if err1 != nil {
+        return err1
     }
     
-    text := make([]byte)    
-    _, err := reader.ReadFull(reader, text)
-    if err != nil {
-        return err
+    err2 := storage.BlobStorageClient.PutAppendBlob(*b, cont, fileName, nil)       
+    if err2 != nil {
+        return err2
     }
     
-    reader.Close()
-    json.Unmarshal(text, g)
+    return nil
 }
-*/
+
+func FillGameBlob(g *Game, fileName, cont string, b *storage.BlobStorageClient) error{    
+    text, err := json.MarshalIndent(g, "", "    ")
+    if err != nil {
+        return err
+    }
+    FillBlob(fileName, cont, &text, b)
+    
+    return nil
+}
+
+func FillBlob(fileName, cont string, text *[]byte, b *storage.BlobStorageClient) error {
+    err := storage.BlobStorageClient.AppendBlock(*b, cont, fileName, *text, nil)
+    if err != nil {
+        return err
+    }
+    
+    return nil
+}
+
+
+func LoadFileBlob(filename, cont string, b *storage.BlobStorageClient) (bool, error, *[]byte){
+    fileExists, err := storage.BlobStorageClient.BlobExists(*b, cont, filename)
+    if err != nil {
+        return fileExists, err, nil
+    } else if fileExists == false{
+        return fileExists, nil, nil
+    }
+    
+    reader, err := storage.BlobStorageClient.GetBlob(*b, cont, filename)
+    if err != nil {
+        return fileExists, err, nil
+    }    
+    text, err := ioutil.ReadAll(reader)
+    if err != nil {
+        return fileExists, err, nil
+    }    
+    reader.Close()
+        
+    return fileExists, nil, &text
+}
+
+func FillBoard(g *Game, text *[]byte){
+    json.Unmarshal(*text, g)
+}

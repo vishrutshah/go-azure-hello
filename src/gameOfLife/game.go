@@ -23,10 +23,10 @@ func InitGame(g *Game) {
         g.Board[i] = make([]bool, g.Width)
         g.Neighbors[i] = make([]int, g.Width)
 	}
-    FillBoard(g)
+    FillRandomBoard(g)
 }
 
-func FillBoard(g *Game){
+func FillRandomBoard(g *Game){
     for i := 0; i < g.Height; i++{
         for j := 0; j < g.Width; j++ {
             rand.Seed((time.Now()).UnixNano() + int64(j) + int64(i))
