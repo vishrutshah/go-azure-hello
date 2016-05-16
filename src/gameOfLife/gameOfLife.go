@@ -1,6 +1,7 @@
 package main
 
 import (
+    "fmt"
     "net/http"
     "html/template"
     "io/ioutil"
@@ -8,7 +9,7 @@ import (
     "github.com/Azure/azure-sdk-for-go/storage"
 )
 
-var width, height = 100, 50
+var width, height = 80, 30
 var golTemplate, err = template.ParseFiles("../src/gol.html")
 var g = Game {Board: make([][]bool, width),
     Neighbors: make([][]int, width),
@@ -29,6 +30,10 @@ func serverError(w *http.ResponseWriter, err error){
 func renderTemplate(w http.ResponseWriter, text string) {
 	err := golTemplate.Execute(w, template.HTML(text))
 	serverError(&w, err)
+}
+
+func uploadFile(w http.ResponseWriter, r *http.Request) {
+    fmt.Println("hi there")
 }
 
 func drawGol(w http.ResponseWriter, r *http.Request) {
@@ -111,6 +116,7 @@ func main() {
     http.HandleFunc("/game/", drawGol)
     http.HandleFunc("/new/", newGol)
     http.HandleFunc("/longest/", longestGame)
+    http.HandleFunc("/upload/", uploadFile)
     http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../src/css"))))
     http.ListenAndServe(":8080", nil)   
 }

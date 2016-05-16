@@ -42,7 +42,7 @@ func FillRandomBoard(g *Game){
 }
 
 func RunGame(g *Game) {
-    time.Sleep(1000 * time.Millisecond)
+    time.Sleep(2000 * time.Millisecond)
     UpdateBoard(g)
 }
 

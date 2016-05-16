@@ -11,7 +11,7 @@ func InitStorage() (*storage.BlobStorageClient, error) {
     accountKey := "SlZ2qIXn+rcRmFtE5UkUYN8P/mAYMKo48wPNugPF2o5hWnOMWSR+VRP8qHhOO/7EJptBCQoLAObgj3gcPSZQhA=="    
     client, err := storage.NewBasicClient(accountName, accountKey)
     if err != nil {
-        return err
+        return nil, err
     }    
     blobStoClient := storage.Client.GetBlobService(client)
     
