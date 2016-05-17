@@ -42,6 +42,10 @@ func newGol(w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/game/", http.StatusFound)
 }
 
+func redirect(w http.ResponseWriter, r *http.Request){
+    http.Redirect(w, r, "/game/", http.StatusFound)
+}
+
 func longestGame(w http.ResponseWriter, r *http.Request) {
     //LoadFile(longest, &g)
     b,_ := InitStorage()
@@ -124,10 +128,11 @@ func main() {
     FillGameBlob(&g, current, container, b)
     
     go runGameEndless(b)
+    http.HandleFunc("/", redirect)
     http.HandleFunc("/game/", drawGol)
     http.HandleFunc("/new/", newGol)
     http.HandleFunc("/longest/", longestGame)
     http.HandleFunc("/upload/", uploadFile)
     http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../src/css"))))
-    http.ListenAndServe(":8080", nil)   
+    http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)   
 }
