@@ -134,5 +134,6 @@ func main() {
     http.HandleFunc("/longest/", longestGame)
     http.HandleFunc("/upload/", uploadFile)
     http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../src/css"))))
-    http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)   
+    //http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
+    http.ListenAndServe(":8080", nil)   
 }
