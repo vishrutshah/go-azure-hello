@@ -3,6 +3,7 @@
  import (
      "fmt"
      "net/http"
+     "game"
 //     "html/template"
 //     "io/ioutil"
      "os"
@@ -12,7 +13,7 @@
 var width, height = 80, 30
 // var golTemplate, err = template.ParseFiles("../src/gol.html")
 
-var g = Game {Board: make([][]bool, width),
+var g = game.Game {Board: make([][]bool, width),
     Neighbors: make([][]int, width),
     Width: width,
     Height: height,
