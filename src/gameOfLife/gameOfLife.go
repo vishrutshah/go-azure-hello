@@ -3,7 +3,7 @@
  import (
      "fmt"
      "net/http"
-     "game"
+//     "game"
 //     "html/template"
 //     "io/ioutil"
      "os"
@@ -145,8 +145,7 @@ var g = game.Game {Board: make([][]bool, width),
  }
  
 func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "You just browsed page (if blank you're at the root): %s\nWidth: %d\nGame height: %d", 
+    fmt.Fprintf(w, "You just browsed page (if blank you're at the root): %s\nWidth: %d", 
         r.URL.Path[1:],
-        width,
-        g.Height)
+        width,)
 }
