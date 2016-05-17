@@ -4,6 +4,7 @@ import (
     "github.com/Azure/azure-sdk-for-go/storage"
     "encoding/json"
     "io/ioutil"
+    "game"
 )
 
 func InitStorage() (*storage.BlobStorageClient, error) {
@@ -58,7 +59,7 @@ func CreateFileBlob(fileName, cont string, b *storage.BlobStorageClient) error {
     return nil
 }
 
-func FillGameBlob(g *Game, fileName, cont string, b *storage.BlobStorageClient) error{    
+func FillGameBlob(g *game.Game, fileName, cont string, b *storage.BlobStorageClient) error{    
     text, err := json.MarshalIndent(g, "", "    ")
     if err != nil {
         return err
@@ -99,6 +100,6 @@ func LoadFileBlob(filename, cont string, b *storage.BlobStorageClient) (bool, er
     return fileExists, nil, &text
 }
 
-func FillBoard(g *Game, text *[]byte){
+func FillBoard(g *game.Game, text *[]byte){
     json.Unmarshal(*text, g)
 }

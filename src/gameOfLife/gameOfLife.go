@@ -126,7 +126,7 @@ var g = game.Game {Board: make([][]bool, width),
 //    InitGame(&g)
     
     http.HandleFunc("/", handler)
-    http.ListenAndServe(":"+os.Getenv("HTTP_PLATFORM_PORT"), nil)
+    http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
     
 //     //CreateFile(&g, current)    
 //     b,_ := InitStorage()
