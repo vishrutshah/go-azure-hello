@@ -9,15 +9,15 @@
 //     "github.com/Azure/azure-sdk-for-go/storage"
 )
 
-// var width, height = 80, 30
+var width, height = 80, 30
 // var golTemplate, err = template.ParseFiles("../src/gol.html")
-// var g = Game {Board: make([][]bool, width),
-//     Neighbors: make([][]int, width),
-//     Width: width,
-//     Height: height,
-//     Generations: 1,
-//     CurrentLongest: false}
-// var longestGameGen int64
+var g = Game {Board: make([][]bool, width),
+    Neighbors: make([][]int, width),
+    Width: width,
+    Height: height,
+    Generations: 1,
+     CurrentLongest: false}
+var longestGameGen int64
 // var current, longest, custom, container = "currentGame", "longestGame", "customGame", "games"
 
 // func serverError(w *http.ResponseWriter, err error){
@@ -120,11 +120,11 @@
 
  func main() {
      
-     http.HandleFunc("/", handler)
+    http.HandleFunc("/", handler)
     http.ListenAndServe(":"+os.Getenv("HTTP_PLATFORM_PORT"), nil)
      
-//     longestGameGen = 1
-//     InitGame(&g)
+    longestGameGen = 1
+    InitGame(&g)
     
 //     //CreateFile(&g, current)    
 //     b,_ := InitStorage()
@@ -141,19 +141,7 @@
 //     //http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
 //     http.ListenAndServe(":8080", nil)   
  }
-/*
-package main
-import (
-    "fmt"
-    "net/http"
-    "os" 
-)
-*/
+ 
 func handler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "You just browsed empty page (if blank you're at the root): %s", r.URL.Path[1:])
 }
-/*
-func main() {
-    http.HandleFunc("/", handler)
-    http.ListenAndServe(":"+os.Getenv("HTTP_PLATFORM_PORT"), nil)
-}*/
