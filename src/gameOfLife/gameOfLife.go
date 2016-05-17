@@ -18,7 +18,7 @@ var g = Game {Board: make([][]bool, width),
     Generations: 1,
     CurrentLongest: false}
 var longestGameGen int64
-var current, longest, container = "currentGame", "longestGame", "games"
+var current, longest, custom, container = "currentGame", "longestGame", "customGame", "games"
 
 func serverError(w *http.ResponseWriter, err error){
 	if err != nil {
@@ -30,10 +30,6 @@ func serverError(w *http.ResponseWriter, err error){
 func renderTemplate(w http.ResponseWriter, text string) {
 	err := golTemplate.Execute(w, template.HTML(text))
 	serverError(&w, err)
-}
-
-func uploadFile(w http.ResponseWriter, r *http.Request) {
-    fmt.Println("hi there")
 }
 
 func drawGol(w http.ResponseWriter, r *http.Request) {
@@ -56,6 +52,21 @@ func longestGame(w http.ResponseWriter, r *http.Request) {
     FillBlob(current, container, text, b)
     
     http.Redirect(w, r, "/game/", http.StatusFound)
+}
+
+func uploadFile(w http.ResponseWriter, r *http.Request) {
+    fmt.Println("hi there")
+    file, _, err := r.FormFile("file")
+    if err != nil {
+        return
+    }
+    text, err := ioutil.ReadAll(file)
+    b,_ := InitStorage()
+    CreateFileBlob(custom, container, b)
+    FillBlob(custom, container, &text, b)
+    FillBoard(&g, &text)
+    
+    http.Redirect(w, r, "/game/", http.StatusFound)    
 }
 
 func resetGame() {

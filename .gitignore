@@ -2,4 +2,4 @@ bin
 pkg
 .vscode
 src/gameOfLife/debug
-lel
+extraInfo
