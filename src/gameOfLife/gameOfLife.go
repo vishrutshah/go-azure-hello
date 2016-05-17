@@ -12,14 +12,14 @@
 
 var width, height = 80, 30
 // var golTemplate, err = template.ParseFiles("../src/gol.html")
-
+/*
 var g = game.Game {Board: make([][]bool, width),
     Neighbors: make([][]int, width),
     Width: width,
     Height: height,
     Generations: 1,
     CurrentLongest: false}
-     
+     */
 //var longestGameGen int64
 // var current, longest, custom, container = "currentGame", "longestGame", "customGame", "games"
 
