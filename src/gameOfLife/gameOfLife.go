@@ -1,13 +1,13 @@
-// package main
+ package main
 
-// import (
-//     "fmt"
-//     "net/http"
+ import (
+     "fmt"
+     "net/http"
 //     "html/template"
 //     "io/ioutil"
-//     "os"
+     "os"
 //     "github.com/Azure/azure-sdk-for-go/storage"
-// )
+)
 
 // var width, height = 80, 30
 // var golTemplate, err = template.ParseFiles("../src/gol.html")
@@ -118,7 +118,11 @@
 //     return ioutil.WriteFile(destiny, text, 0600)
 // }
 
-// func main() {
+ func main() {
+     
+     http.HandleFunc("/", handler)
+    http.ListenAndServe(":"+os.Getenv("HTTP_PLATFORM_PORT"), nil)
+     
 //     longestGameGen = 1
 //     InitGame(&g)
     
@@ -136,18 +140,20 @@
 //     http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../src/css"))))
 //     //http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
 //     http.ListenAndServe(":8080", nil)   
-// }
-
+ }
+/*
 package main
 import (
     "fmt"
     "net/http"
     "os" 
 )
+*/
 func handler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "You just browsed empty page (if blank you're at the root): %s", r.URL.Path[1:])
 }
+/*
 func main() {
     http.HandleFunc("/", handler)
     http.ListenAndServe(":"+os.Getenv("HTTP_PLATFORM_PORT"), nil)
-}
+}*/
