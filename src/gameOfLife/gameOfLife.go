@@ -11,14 +11,14 @@
 
 var width, height = 80, 30
 // var golTemplate, err = template.ParseFiles("../src/gol.html")
-/*
+
 var g = Game {Board: make([][]bool, width),
     Neighbors: make([][]int, width),
     Width: width,
     Height: height,
     Generations: 1,
-     CurrentLongest: false}
-     */
+    CurrentLongest: false}
+     
 //var longestGameGen int64
 // var current, longest, custom, container = "currentGame", "longestGame", "customGame", "games"
 
@@ -122,7 +122,7 @@ var g = Game {Board: make([][]bool, width),
 
  func main() {
     //longestGameGen = 1
-    //InitGame(&g)
+//    InitGame(&g)
     
     http.HandleFunc("/", handler)
     http.ListenAndServe(":"+os.Getenv("HTTP_PLATFORM_PORT"), nil)
@@ -144,5 +144,8 @@ var g = Game {Board: make([][]bool, width),
  }
  
 func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "You just browsed page (if blank you're at the root): %s\nGame width: %d", r.URL.Path[1:], width)
+    fmt.Fprintf(w, "You just browsed page (if blank you're at the root): %s\nWidth: %d\nGame height: %d", 
+        r.URL.Path[1:],
+        width,
+        g.Height)
 }
