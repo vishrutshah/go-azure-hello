@@ -8,8 +8,8 @@
      "os"
      //"github.com/Azure/azure-sdk-for-go/storage"
      //"encoding/json"
-     //"math/rand"
-     //"time"
+     "math/rand"
+     "time"
 )
 
 //GAME
