@@ -383,7 +383,7 @@ func copyPasteFile(destiny, source string) error {
 }
 */
  func main() {
-    //longestGameGen = 1
+    longestGameGen = 1
     //InitGame(&g)
     //fmt.Printf("You just browsed page (if blank you're at the root): \nWidth: %d Game height: %d", width, g.Height)
     http.HandleFunc("/", handler)
