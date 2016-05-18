@@ -45,7 +45,7 @@ func FillRandomBoard(g *Game){
     }
     g.Generations = 1
 }
-/*
+
 func RunGame(g *Game) {
     time.Sleep(10000 * time.Millisecond)
     UpdateBoard(g)
@@ -168,7 +168,7 @@ func IsAlive(g *Game) bool {
     }
     return false
 }
-*/
+
 //CLOUD
 
 func InitStorage() (*storage.BlobStorageClient, error) {
@@ -182,7 +182,7 @@ func InitStorage() (*storage.BlobStorageClient, error) {
     
     return &blobStoClient, nil      
 }
-/*
+
 func CopyPasteFileBlob(destiny, source, cont string, b *storage.BlobStorageClient) error{
     err := CreateFileBlob(destiny, cont, b)
     if err != nil {
@@ -201,7 +201,7 @@ func CopyPasteFileBlob(destiny, source, cont string, b *storage.BlobStorageClien
     
     return nil
 }
-*/
+
 
 func CreateFileBlob(fileName, cont string, b *storage.BlobStorageClient) error {
     _, err := storage.BlobStorageClient.CreateContainerIfNotExists(*b, cont, storage.ContainerAccessTypeBlob)
@@ -223,7 +223,7 @@ func CreateFileBlob(fileName, cont string, b *storage.BlobStorageClient) error {
     
     return nil
 }
-/*
+
 func FillGameBlob(g *Game, fileName, cont string, b *storage.BlobStorageClient) error{    
     text, err := json.MarshalIndent(g, "", "    ")
     if err != nil {
@@ -268,7 +268,7 @@ func LoadFileBlob(filename, cont string, b *storage.BlobStorageClient) (bool, er
 func FillBoard(g *Game, text *[]byte){
     json.Unmarshal(*text, g)
 }
-*/
+
 
 //MAIN
 
@@ -284,7 +284,7 @@ var g = Game {Board: make([][]bool, width),
      
 var longestGameGen int64
 var current, longest, custom, container = "currentGame", "longestGame", "customGame", "games"
-/*
+
 func serverError(w *http.ResponseWriter, err error){
 	if err != nil {
 		http.Error(*w, err.Error(), http.StatusInternalServerError)
@@ -382,12 +382,12 @@ func copyPasteFile(destiny, source string) error {
     }
     return ioutil.WriteFile(destiny, text, 0600)
 }
-*/
+
  func main() {
     longestGameGen = 1
     InitGame(&g)
     //fmt.Printf("You just browsed page (if blank you're at the root): \nWidth: %d Game height: %d", width, g.Height)
-    http.HandleFunc("/", handler)
+    //http.HandleFunc("/", handler)
     //http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
     
     //CreateFile(&g, current)    
@@ -395,20 +395,22 @@ func copyPasteFile(destiny, source string) error {
     CreateFileBlob(current, container, b)
     //FillGameBlob(&g, current, container, b)
     
-    //go runGameEndless(b)
-    //http.HandleFunc("/", redirect)
-    //http.HandleFunc("/game/", drawGol)
-    //http.HandleFunc("/new/", newGol)
-    //http.HandleFunc("/longest/", longestGame)
-    //http.HandleFunc("/upload/", uploadFile)
-    //http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../src/css"))))
+    go runGameEndless(b)
+    http.HandleFunc("/", redirect)
+    http.HandleFunc("/game/", drawGol)
+    http.HandleFunc("/new/", newGol)
+    http.HandleFunc("/longest/", longestGame)
+    http.HandleFunc("/upload/", uploadFile)
+    http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../src/css"))))
     //http.ListenAndServe(":8080", nil)   
     http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
  }
  
+ /*
 func handler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "You just browsed page (if blank you're at the root): %s\nWidth: %dGame height: %d", 
         r.URL.Path[1:],
         width,
         g.Height)
 }
+*/
