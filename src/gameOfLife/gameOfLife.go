@@ -4,10 +4,10 @@
      "fmt"
      "net/http"
      "html/template"
-     //"io/ioutil"
+     "io/ioutil"
      "os"
      "github.com/Azure/azure-sdk-for-go/storage"
-     //"encoding/json"
+     "encoding/json"
      "math/rand"
      "time"
 )
