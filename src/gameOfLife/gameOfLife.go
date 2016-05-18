@@ -22,7 +22,7 @@ type Game struct {
     Generations int64
     CurrentLongest bool
 }
-/*
+
 func InitGame(g *Game) {
     for i := 0; i < g.Height; i++ {
         g.Board[i] = make([]bool, g.Width)
@@ -45,7 +45,7 @@ func FillRandomBoard(g *Game){
     }
     g.Generations = 1
 }
-
+/*
 func RunGame(g *Game) {
     time.Sleep(10000 * time.Millisecond)
     UpdateBoard(g)
@@ -384,7 +384,7 @@ func copyPasteFile(destiny, source string) error {
 */
  func main() {
     longestGameGen = 1
-    //InitGame(&g)
+    InitGame(&g)
     //fmt.Printf("You just browsed page (if blank you're at the root): \nWidth: %d Game height: %d", width, g.Height)
     http.HandleFunc("/", handler)
     //http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
