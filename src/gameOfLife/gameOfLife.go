@@ -4,12 +4,12 @@
      "fmt"
      "net/http"
      "html/template"
-     "io/ioutil"
+     //"io/ioutil"
      "os"
-     "github.com/Azure/azure-sdk-for-go/storage"
-     "encoding/json"
-     "math/rand"
-     "time"
+     //"github.com/Azure/azure-sdk-for-go/storage"
+     //"encoding/json"
+     //"math/rand"
+     //"time"
 )
 
 //GAME
@@ -22,7 +22,7 @@ type Game struct {
     Generations int64
     CurrentLongest bool
 }
-
+/*
 func InitGame(g *Game) {
     for i := 0; i < g.Height; i++ {
         g.Board[i] = make([]bool, g.Width)
@@ -168,9 +168,9 @@ func IsAlive(g *Game) bool {
     }
     return false
 }
-
+*/
 //CLOUD
-
+/*
 func InitStorage() (*storage.BlobStorageClient, error) {
     accountName := "hellosto"
     accountKey := "SlZ2qIXn+rcRmFtE5UkUYN8P/mAYMKo48wPNugPF2o5hWnOMWSR+VRP8qHhOO/7EJptBCQoLAObgj3gcPSZQhA=="    
@@ -267,7 +267,7 @@ func LoadFileBlob(filename, cont string, b *storage.BlobStorageClient) (bool, er
 func FillBoard(g *Game, text *[]byte){
     json.Unmarshal(*text, g)
 }
-
+*/
 
 //MAIN
 
@@ -282,8 +282,8 @@ var g = Game {Board: make([][]bool, width),
     CurrentLongest: false}
      
 var longestGameGen int64
- var current, longest, custom, container = "currentGame", "longestGame", "customGame", "games"
-
+var current, longest, custom, container = "currentGame", "longestGame", "customGame", "games"
+/*
 func serverError(w *http.ResponseWriter, err error){
 	if err != nil {
 		http.Error(*w, err.Error(), http.StatusInternalServerError)
@@ -381,10 +381,10 @@ func copyPasteFile(destiny, source string) error {
     }
     return ioutil.WriteFile(destiny, text, 0600)
 }
-
+*/
  func main() {
-    longestGameGen = 1
-    InitGame(&g)
+    //longestGameGen = 1
+    //InitGame(&g)
     //fmt.Printf("You just browsed page (if blank you're at the root): \nWidth: %d Game height: %d", width, g.Height)
     http.HandleFunc("/", handler)
     //http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
