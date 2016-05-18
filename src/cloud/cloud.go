@@ -1,4 +1,4 @@
-package main
+package cloud
 
 import (
     "github.com/Azure/azure-sdk-for-go/storage"

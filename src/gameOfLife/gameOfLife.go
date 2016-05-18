@@ -124,6 +124,9 @@ var g = game.Game {Board: make([][]bool, width),
  func main() {
     //longestGameGen = 1
 //    InitGame(&g)
+
+    fmt.Printf("You just browsed page (if blank you're at the root): \nWidth: %d Game height: %d", width, g.Height)
+
     
     http.HandleFunc("/", handler)
     http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
