@@ -6,7 +6,7 @@
      "html/template"
      //"io/ioutil"
      "os"
-     //"github.com/Azure/azure-sdk-for-go/storage"
+     "github.com/Azure/azure-sdk-for-go/storage"
      //"encoding/json"
      "math/rand"
      "time"
@@ -170,7 +170,7 @@ func IsAlive(g *Game) bool {
 }
 */
 //CLOUD
-/*
+
 func InitStorage() (*storage.BlobStorageClient, error) {
     accountName := "hellosto"
     accountKey := "SlZ2qIXn+rcRmFtE5UkUYN8P/mAYMKo48wPNugPF2o5hWnOMWSR+VRP8qHhOO/7EJptBCQoLAObgj3gcPSZQhA=="    
@@ -182,7 +182,7 @@ func InitStorage() (*storage.BlobStorageClient, error) {
     
     return &blobStoClient, nil      
 }
-
+/*
 func CopyPasteFileBlob(destiny, source, cont string, b *storage.BlobStorageClient) error{
     err := CreateFileBlob(destiny, cont, b)
     if err != nil {
@@ -201,6 +201,7 @@ func CopyPasteFileBlob(destiny, source, cont string, b *storage.BlobStorageClien
     
     return nil
 }
+*/
 
 func CreateFileBlob(fileName, cont string, b *storage.BlobStorageClient) error {
     _, err := storage.BlobStorageClient.CreateContainerIfNotExists(*b, cont, storage.ContainerAccessTypeBlob)
@@ -222,7 +223,7 @@ func CreateFileBlob(fileName, cont string, b *storage.BlobStorageClient) error {
     
     return nil
 }
-
+/*
 func FillGameBlob(g *Game, fileName, cont string, b *storage.BlobStorageClient) error{    
     text, err := json.MarshalIndent(g, "", "    ")
     if err != nil {
@@ -390,8 +391,8 @@ func copyPasteFile(destiny, source string) error {
     //http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
     
     //CreateFile(&g, current)    
-    //b,_ := InitStorage()
-    //CreateFileBlob(current, container, b)
+    b,_ := InitStorage()
+    CreateFileBlob(current, container, b)
     //FillGameBlob(&g, current, container, b)
     
     //go runGameEndless(b)
