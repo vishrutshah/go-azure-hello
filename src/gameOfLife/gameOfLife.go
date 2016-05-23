@@ -141,8 +141,11 @@ func copyPasteFile(destiny, source string) error {
     http.HandleFunc("/longest/", longestGame)
     http.HandleFunc("/upload/", uploadFile)
     http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../src/css"))))
-    http.ListenAndServe(":8080", nil)   
-    //http.ListenAndServe(":" + os.Getenv("HTTP_PLATFORM_PORT"), nil)
+    
+    port := os.Getenv("HTTP_PLATFORM_PORT")
+    if port == "" {
+        port = "8080"
+    }    
  }
  
  /*
