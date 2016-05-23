@@ -2,4 +2,8 @@ bin
 pkg
 .vscode
 src/gameOfLife/debug
-extraInfo
+src/9fans.net
+src/extraInfo
+src/github.com
+src/ golang.org
+src/sourcegraph.com
